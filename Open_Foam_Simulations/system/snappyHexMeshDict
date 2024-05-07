@@ -63,7 +63,7 @@ castellatedMeshControls
         {
             level (4 4);
             faceZone airToSolid;
-            cellZone metal;
+            cellZone solid;
             mode        insidePoint;
             insidePoint (0.0005 0.0005 0.0005);
         }

@@ -1,0 +1,94 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  10
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      snappyHexMeshDict;
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#includeEtc "caseDicts/mesh/generation/snappyHexMeshDict.cfg";
+#includeEtc "controlDict";
+
+
+castellatedMesh true;
+snap            true;
+addLayers       false;
+
+geometry
+{
+    recinto
+    {
+        type triSurfaceMesh;
+        file "Recinto.stl";
+
+        regions
+        {
+            //airInlet     { name airInlet;     }
+            //airOutlet    { name airOutlet;    }
+            //airWalls     { name paredesAdiabaticasTotales;}
+        }
+    }
+
+    placa
+    {
+        type triSurfaceMesh;
+        file "placa.stl";
+
+        regions
+        {
+            hotSide {name hotSide; }
+            coldSide {name coldSide; }
+        }
+    }
+};
+
+castellatedMeshControls
+{
+    refinementSurfaces
+    {
+        
+        recinto
+        {
+            level (0 0);
+            regions
+            {
+                //airInlet     { level (0 0); patchInfo { type patch; } }
+                //airOutlet    { level (0 0); patchInfo { type patch; } }
+                airWalls     { level (0 0); patchInfo { type wall; } }
+            }
+        }
+
+        placa
+        {
+            level (4 4);
+            faceZone airToSolid;
+            cellZone solid;
+            mode        insidePoint;
+            insidePoint (0.0005 0.0005 0.0005);
+        }
+    }
+
+    nCellsBetweenLevels 1;
+
+    insidePoint (0.20 0.20 0.20);
+}
+
+addLayersControls
+{
+    relativeSizes       true;
+    minThickness        1;
+    finalLayerThickness 1;
+    expansionRatio      1;
+    layers
+    {}
+}
+
+// ************************************************************************* //
